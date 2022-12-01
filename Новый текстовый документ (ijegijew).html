@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>TTS Service</title>
+    <style>
+      /* CSS styles go here */
+      body {
+        font-family: 'Open Sans', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #fafafa;
+      }
+
+      .container {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        grid-gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px;
+      }
+
+      .logo {
+        grid-column: 1 / span 12;
+        text-align: center;
+      }
+
+      .logo img {
+        max-width: 100%;
+      }
+
+      .intro {
+        grid-column: 1 / span 12;
+        font-size: 18px;
+        line-height: 1.5;
+        color: #333;
+        margin-bottom: 30px;
+      }
+
+      .input-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      .input-group label {
+        flex: 0 0 150px;
+        font-size: 14px;
+        font-weight: bold;
+        margin-right: 15px;
+      }
+
+      .input-group input,
+      .input-group select {
+        flex: 1;
+        padding: 10px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+
+      .input-group input[type="submit"] {
+        background-color: #333;
+        color: #fff;
+        cursor: pointer;
+        transition: 0.3s ease all;
+      }
+
+      .input-group input[type="submit"]:hover {
+        background-color: #222;
+      }
+
+      .output {
+        grid-column: 1 / span 12;
+        margin-top: 30px;
+        padding: 15px;
+        background-color: #333;
+        color: #fff;
+      }
+
+      .output p {
+        font-size: 18px;
+        margin: 0;
+        padding: 0;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          grid-template-columns: repeat(4, 1fr);
+        }
+
+        .logo {
+          grid-column: 1 / span 4;
+        }
+
+        .intro {
+          grid-column: 1 / span 4;
+        }
+
+        .output {
+          grid-column: 1 / span 4;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo">
+        <img src="logo.png" alt="TTS Service">
+      </div>
+      <div class="intro">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.Nam venenatis, nibh ut fermentum imperdiet, leo erat tincidunt purus, at placerat lectus risus eu orci.
+      </div>
+      <form>
+        <div class="input-group">
+          <label for="text">Enter text:</label>
+          <input type="text" id="text" name="text" required>
+        </div>
+        <div class="input-group">
+          <label for="voice">Select voice:</label>
+          <select id="voice" name="voice">
+            <option value="default">Default</option>
+            <option value="custom">Custom</option>
+          </select>
+        </div>
+        <div class="input-group" id="custom-voice-options" style="display: none;">
+          <label for="language">Language:</label>
+          <input type="text" id="language" name="language">
+          <label for="gender">Gender:</label>
+          <select id="gender" name="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+          <label for="pitch">Pitch:</label>
+          <input type="range" id="pitch" name="pitch" min="0" max="2" step="0.1" value="1">
+          <label for="speed">Speed:</label>
+          <input type="range" id="speed" name="speed" min="0.5" max="2" step="0.1" value="1">
+        </div>
+        <div class="input-group">
+          <input type="submit" value="Synthesize">
+        </div>
+      </form>
+      <div class="output">
+        <p id="output">Output will appear here...</p>
+      </div>
+    </div>
+    <script>
+      // JavaScript code goes here
+      const form = document.querySelector('form');
+      const output = document.querySelector('#output');
+      const customVoiceOptions = document.querySelector('#custom-voice-options');
+      const voiceSelect = document.querySelector('#voice');
+
+      voiceSelect.addEventListener('change', (event) => {
+        if (event.target.value === 'custom') {
+          customVoiceOptions.style.display = 'flex';
+        } else {
+          customVoiceOptions.style.display = 'none';
+        }
+      });
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const text = document.querySelector('#text').value;
+        const voice = document.querySelector('#voice').value;
+        let language, gender, pitch, speed;
+
+        if (voice === 'custom') {
+          language = document.querySelector('#language').value;
+          gender = document.querySelector('#gender').value;
+          pitch = document.querySelector('#pitch').value;
+          speed = document.querySelector('#speed').value;
+        }
+
+        // Use TTS API to synthesize speech
+        fetch('https://example.com/tts', {
+          method: 'POST',
+          body: JSON.stringify({ text, voice, language, gender, pitch, speed }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Update output with synthesized speech
+            output.innerText = data.speech;
+          });
+      });
+    </script>
+  </body>
+</html>
+
